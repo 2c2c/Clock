@@ -21,7 +21,7 @@ const AlarmList = props => (
           <Text>
             {
             dateFns.format(
-              new Date(1999, 1, 1, data.hour, data.minute),
+              new Date(1999, 1, 1, data.time.hour, data.time.minute),
               "h:mm A"
             )
           }

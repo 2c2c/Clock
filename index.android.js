@@ -12,14 +12,18 @@ import {
   View,
   ListView,
   Switch,
-  TimePickerAndroid
+  TimePickerAndroid,
+  Picker
 } from "react-native";
-import {Button,Drawer,Toolbar,Icon} from "react-native-material-design";
+import {Button,Drawer,Toolbar,Icon,Avatar} from "react-native-material-design";
 import dateFns from "date-fns";
 import Clock from "./src/Clock";
 import ActionButton from "react-native-action-button";
 import Screen from "./src/Screen";
-import AlarmList from './src/AlarmList'
+import AlarmList from "./src/AlarmList";
+import DayIconSetter from "./src/DayIconSetter";
+import DayIcon from "./src/DayIconSetter";
+import Week from "./src/Week";
 
 import Swiper from "react-native-swiper";
 
@@ -49,11 +53,21 @@ class rntest extends React.Component {
 
     this.items = [];
     this.count = 0;
-    this.state = {dataSource: ds.cloneWithRows(this.items)};
+    this.state = {language: "", dataSource: ds.cloneWithRows(this.items)};
   }
 
   addToAlarmList(hour, minute) {
-    this.items = this.items.concat([{name: "item" + this.count, hour, minute}]);
+    const time = {hour, minute}
+    const days = {
+      sunday: false,
+      monday: false,
+      tuesday: false,
+      wednesday: false,
+      thursday: false,
+      friday: false,
+      saturday: false,
+    }
+    this.items = this.items.concat([{name: "item" + this.count, time, days}]);
     this.count++;
     this.setState({
       dataSource: this.state.dataSource.cloneWithRows(this.items)
@@ -104,6 +118,7 @@ class rntest extends React.Component {
         <View style={styles.slide3}>
           <Switch onValueChange={v => console.log("switch")} value={true} />
           <Button text="asdf" onPress={this.dateTimePicker.bind(this)} />
+          <Week style={{flexDirection: "row"}} />
         </View>
       </Swiper>
     );
