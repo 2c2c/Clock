@@ -5,12 +5,21 @@
  */
 
 import React, {Component} from "react";
-import {AppRegistry,StyleSheet,Text,View,ListView,Switch} from "react-native";
-import {Drawer,Toolbar,Icon} from "react-native-material-design";
+import {
+  AppRegistry,
+  StyleSheet,
+  Text,
+  View,
+  ListView,
+  Switch,
+  TimePickerAndroid
+} from "react-native";
+import {Button,Drawer,Toolbar,Icon} from "react-native-material-design";
 import dateFns from "date-fns";
 import Clock from "./src/Clock";
 import ActionButton from "react-native-action-button";
 import Screen from "./src/Screen";
+import AlarmList from './src/AlarmList'
 
 import Swiper from "react-native-swiper";
 
@@ -38,16 +47,39 @@ class rntest extends React.Component {
 
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 
-    this.items = ["row1", "row2"];
+    this.items = [];
+    this.count = 0;
     this.state = {dataSource: ds.cloneWithRows(this.items)};
   }
 
-  addToAlarmList() {
-    this.items = this.items.concat(["test"]);
+  addToAlarmList(hour, minute) {
+    this.items = this.items.concat([{name: "item" + this.count, hour, minute}]);
+    this.count++;
     this.setState({
       dataSource: this.state.dataSource.cloneWithRows(this.items)
     });
   }
+
+  async dateTimePicker() {
+    try {
+      const {action, hour, minute} = await TimePickerAndroid.open({
+        hour: 14,
+        minute: 0,
+        // Will display '2 PM'
+        is24Hour: false
+      });
+      if (action !== TimePickerAndroid.dismissedAction) {
+        // Selected hour (0-23), minute (0-59)
+        this.addToAlarmList(hour, minute);
+        console.log(items);
+        //create new item in ListView
+        //name, time contents, off state
+      }
+    } catch ({code, message}) {
+      console.warn("Cannot open time picker", message);
+    }
+  }
+
   render() {
     return (
       <Swiper style={styles.wrapper} showsButtons={false}>
@@ -55,14 +87,9 @@ class rntest extends React.Component {
           <Clock />
         </Screen>
         <Screen style={styles.slide1} titlewtf="Alarm">
-          <ListView
-            dataSource={this.state.dataSource}
-            renderRow={data => (
-                <View>
-                  <Text>{data}</Text>
-                </View>
-              )}
-          />
+          <View style={{paddingTop: 54}}>
+            <AlarmList dataSource={this.state.dataSource} />
+          </View>
           <ActionButton
             buttonColor="rgba(231,76,60,1)"
             onPress={this.addToAlarmList.bind(this)}
@@ -76,6 +103,7 @@ class rntest extends React.Component {
         </Screen>
         <View style={styles.slide3}>
           <Switch onValueChange={v => console.log("switch")} value={true} />
+          <Button text="asdf" onPress={this.dateTimePicker.bind(this)} />
         </View>
       </Swiper>
     );
