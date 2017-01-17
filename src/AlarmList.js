@@ -6,29 +6,123 @@ import {
   View,
   ListView,
   Switch,
+  Dimensions,
   TimePickerAndroid
 } from "react-native";
-import {Button,Drawer,Toolbar,Icon} from "react-native-material-design";
+import {Card,Button,Drawer,Toolbar,Icon} from "react-native-material-design";
 import dateFns from "date-fns";
+import ActionButton from "react-native-action-button";
+import Week from "./Week";
 
 //androids timepicker gives an hour and minute integer
 //creating a fake date makes for easier conversion
-const AlarmList = props => (
-  <ListView
-    dataSource={props.dataSource}
-    renderRow={data => (
-        <View>
-          <Text>
-            {
-            dateFns.format(
-              new Date(1999, 1, 1, data.time.hour, data.time.minute),
-              "h:mm A"
-            )
-          }
-          </Text>
-        </View>
-      )}
-  />
-);
+export default class AlarmList extends React.Component {
+  constructor() {
+    super();
 
-export default AlarmList;
+    const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+
+    this.items = [];
+    this.count = 0;
+    this.state = {language: "", dataSource: ds.cloneWithRows(this.items)};
+  }
+
+  addToAlarmList(hour, minute) {
+    const time = {hour, minute};
+    const days = {
+      su: false,
+      mo: false,
+      tu: false,
+      we: false,
+      th: false,
+      fr: false,
+      sa: false
+    };
+    this.items = this.items.concat([{name: "item" + this.count, time, days}]);
+    this.count++;
+    this.setState({
+      dataSource: this.state.dataSource.cloneWithRows(this.items)
+    });
+  }
+
+  handleDayToggle(rowID, day) {
+    const lowercase_day = day.toLowerCase();
+    this.items[rowID].days[lowercase_day] = !this.items[rowID].days[lowercase_day];
+
+    // better way to copy? spread doesnt work
+    const items_copy = JSON.parse(JSON.stringify(this.items));
+
+    this.setState({
+      dataSource: this.state.dataSource.cloneWithRows(items_copy)
+    });
+  }
+  _renderRow(rowData, sectionID, rowID, highlightRow) {
+    return (
+      <View style={{flexDirection: "row"}}>
+        <Card
+          style={
+            {flexDirection: "row", justifyContent: "space-between", width: Dimensions.get("window").width * 0.95}
+          }
+        >
+          <View>
+            <Text style={{fontSize: 30, alignSelf: "flex-start"}}>
+              {
+                dateFns.format(
+                  new Date(1999, 1, 1, rowData.time.hour, rowData.time.minute),
+                  "h:mm A"
+                )
+              }
+            </Text>
+            <Text>Mon, Tue, Thu</Text>
+          </View>
+          <View style={{alignSelf: "center"}}>
+            <Text>test</Text>
+          </View>
+        </Card>
+      </View>
+    );
+  }
+  // <Week
+  //   handleDayToggle={(rowID, day) => this.handleDayToggle(rowID, day)}
+  //   rowID={rowID}
+  //   enabledDays={rowData.days}
+  //   style={{flexDirection: "row"}}
+  // />
+  async dateTimePicker() {
+    try {
+      const {action, hour, minute} = await TimePickerAndroid.open({
+        hour: 14,
+        minute: 0,
+        // Will display '2 PM'
+        is24Hour: false
+      });
+      if (action !== TimePickerAndroid.dismissedAction) {
+        // Selected hour (0-23), minute (0-59)
+        this.addToAlarmList(hour, minute);
+        console.log(this.items);
+        //create new item in ListView
+        //name, time contents, off state
+      }
+    } catch ({code, message}) {
+      console.warn("Cannot open time picker", message);
+    }
+  }
+  render() {
+    return (
+      <View>
+        <ListView
+          style={{height: 500}}
+          contentContainerStyle={{alignItems: "center"}}
+          enableEmptySections
+          dataSource={this.state.dataSource}
+          renderRow={this._renderRow.bind(this)}
+        />
+        <ActionButton
+          position="right"
+          buttonColor="rgba(231,76,60,1)"
+          onPress={() => this.dateTimePicker()}
+        />
+      </View>
+    );
+  }
+}

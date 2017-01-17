@@ -8,19 +8,16 @@ import {
   Switch,
   TimePickerAndroid,
   Picker,
-  TouchableHighlight
+  TouchableHighlight,
+  TouchableOpacity
 } from "react-native";
 import {Button,Drawer,Toolbar,Icon,Avatar} from "react-native-material-design";
 
 const DayIcon = props => (
-  <TouchableHighlight onPress={() => props.onPress()}>
-  <View>
-    <Avatar
-      text={props.day}
-      backgroundColor={props.enabled ? "paperLime" : "#bbbbbb"}
-    />
-  </View>
-  </TouchableHighlight>
+  <Avatar
+    text={props.day}
+    backgroundColor={props.enabled ? "paperLime" : "#bbbbbb"}
+  />
 );
 
 export default DayIcon;
