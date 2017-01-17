@@ -26,6 +26,7 @@ import DayIconSetter from "./src/DayIconSetter";
 import DayIcon from "./src/DayIconSetter";
 import Week from "./src/Week";
 import Timer from "./src/Timer";
+import AlertModal from "./src/AlertModal";
 
 import Swiper from "react-native-swiper";
 
@@ -84,6 +85,5 @@ class rntest extends React.Component {
 //   onChangeText={text => this.setState({text})}
 //   value={this.state.text}
 // />
-// <Switch onValueChange={v => console.log("switch")} value={true} />
 // <Button text="asdf" onPress={this.dateTimePicker.bind(this)} />
 AppRegistry.registerComponent("rntest", () => rntest);

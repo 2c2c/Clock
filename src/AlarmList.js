@@ -7,12 +7,14 @@ import {
   ListView,
   Switch,
   Dimensions,
-  TimePickerAndroid
+  TimePickerAndroid,
+  Modal
 } from "react-native";
 import {Card,Button,Drawer,Toolbar,Icon} from "react-native-material-design";
 import dateFns from "date-fns";
 import ActionButton from "react-native-action-button";
 import Week from "./Week";
+import AlertModal from "./AlertModal";
 
 //androids timepicker gives an hour and minute integer
 //creating a fake date makes for easier conversion
@@ -38,7 +40,10 @@ export default class AlarmList extends React.Component {
       fr: false,
       sa: false
     };
-    this.items = this.items.concat([{name: "item" + this.count, time, days}]);
+    const alarmEnabled = false;
+    this.items = this.items.concat([
+      {name: "item" + this.count, time, days, alarmEnabled}
+    ]);
     this.count++;
     this.setState({
       dataSource: this.state.dataSource.cloneWithRows(this.items)
@@ -56,16 +61,31 @@ export default class AlarmList extends React.Component {
       dataSource: this.state.dataSource.cloneWithRows(items_copy)
     });
   }
+
+  handleAlarmToggle(rowID) {
+    this.items[rowID].alarmEnabled = !this.items[rowID].alarmEnabled;
+
+    // better way to copy? spread doesnt work
+    const items_copy = JSON.parse(JSON.stringify(this.items));
+
+    this.setState({
+      dataSource: this.state.dataSource.cloneWithRows(items_copy)
+    });
+  }
   _renderRow(rowData, sectionID, rowID, highlightRow) {
     return (
       <View style={{flexDirection: "row"}}>
         <Card
           style={
-            {flexDirection: "row", justifyContent: "space-between", width: Dimensions.get("window").width * 0.95}
+            {
+              flexDirection: "row",
+              justifyContent: "space-between",
+              width: Dimensions.get("window").width * 0.95
+            }
           }
         >
           <View>
-            <Text style={{fontSize: 30, alignSelf: "flex-start"}}>
+            <Text style={{fontSize: 30}}>
               {
                 dateFns.format(
                   new Date(1999, 1, 1, rowData.time.hour, rowData.time.minute),
@@ -76,7 +96,10 @@ export default class AlarmList extends React.Component {
             <Text>Mon, Tue, Thu</Text>
           </View>
           <View style={{alignSelf: "center"}}>
-            <Text>test</Text>
+            <Switch
+              onValueChange={r => this.handleAlarmToggle(rowID)}
+              value={rowData.alarmEnabled}
+            />
           </View>
         </Card>
       </View>
@@ -111,7 +134,7 @@ export default class AlarmList extends React.Component {
     return (
       <View>
         <ListView
-          style={{height: 500}}
+          style={{height: Dimensions.get("window").height}}
           contentContainerStyle={{alignItems: "center"}}
           enableEmptySections
           dataSource={this.state.dataSource}
@@ -122,6 +145,7 @@ export default class AlarmList extends React.Component {
           buttonColor="rgba(231,76,60,1)"
           onPress={() => this.dateTimePicker()}
         />
+        <AlertModal />
       </View>
     );
   }
