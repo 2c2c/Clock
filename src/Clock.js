@@ -20,8 +20,8 @@ export default class Clock extends React.Component {
   }
   render() {
     return (
-      <View>
-        <Text>{this.state.currentTime}</Text>
+      <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+        <Text style={{fontSize: 80}}>{this.state.currentTime}</Text>
       </View>
     )
   }

@@ -26,7 +26,6 @@ import DayIconSetter from "./src/DayIconSetter";
 import DayIcon from "./src/DayIconSetter";
 import Week from "./src/Week";
 import Timer from "./src/Timer";
-import AlertModal from "./src/AlertModal";
 
 import Swiper from "react-native-swiper";
 

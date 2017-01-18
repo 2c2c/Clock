@@ -16,8 +16,7 @@ import {Button,Drawer,Toolbar,Icon,Avatar} from "react-native-material-design";
 const DayIcon = props => (
   <Avatar
     text={props.day}
-    backgroundColor={props.enabled ? "paperLime" : "#bbbbbb"}
-  />
+    backgroundColor={props.enabled ? "#FF3F80" : "#bbbbbb"} />
 );
 
 export default DayIcon;
