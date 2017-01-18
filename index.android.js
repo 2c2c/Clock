@@ -77,12 +77,4 @@ class rntest extends React.Component {
   }
 }
 
-// <Week style={{flexDirection: "row"}} />
-// <TextInput
-//   keyboardType="numeric"
-//   style={{height: 40, borderColor: "gray", borderWidth: 1}}
-//   onChangeText={text => this.setState({text})}
-//   value={this.state.text}
-// />
-// <Button text="asdf" onPress={this.dateTimePicker.bind(this)} />
 AppRegistry.registerComponent("rntest", () => rntest);

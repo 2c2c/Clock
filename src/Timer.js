@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, {Component} from "react";
 import {
   AppRegistry,
   StyleSheet,
@@ -8,47 +8,76 @@ import {
   Switch,
   TimePickerAndroid,
   Picker,
+  Dimensions,
   TextInput
 } from "react-native";
-import { Button, Drawer, Toolbar, Icon, Avatar } from "react-native-material-design";
+import {
+  Card,
+  Button,
+  Drawer,
+  Toolbar,
+  Icon,
+  Divider,
+  Avatar
+} from "react-native-material-design";
 import dateFns from "date-fns";
 import ActionButton from "react-native-action-button";
 import Swiper from "react-native-swiper";
+import KeypadNumber from "./KeypadNumber"
 
 export default class extends React.Component {
-  state = {
-    display: '12345',
-  };
+  state = {display: "00000"};
 
-  onKeyPress(key) {
-    console.log(key)
+  onPressKey(key) {
+    console.log(key);
+    let new_display = this.state.display.substring(1, 5);
+    new_display += key;
+
+    this.setState({display: new_display});
   }
 
   render() {
-    const {display} = this.state
+    const {display} = this.state;
     const formatted_display = `${display.substring(0,1)}h ${display.substring(1,3)}m ${display.substring(3,5)}s`
     return (
-      <View>
-        <Text>
+      <Card
+        style={
+          {
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            flexGrow: 1,
+            width: Dimensions.get('window').width
+          }
+        }
+        >
+        <Text style={{ fontSize: 50, paddingBottom: 30 }}>
           {formatted_display}
         </Text>
-        <View style={{ flexDirection: 'row' }}>
-          <Button text="1" onPress={() => this.onKeyPress(1)} />
-          <Button text="2" onPress={() => this.onKeyPress(2)} />
-          <Button text="3" onPress={() => this.onKeyPress(3)} />
+        <View style={{
+            flexDirection: "column",
+            alignItems: "center",
+        }}>
+          <View style={{flexDirection: "row"}}>
+            <KeypadNumber number="1" onPressKey={key => this.onPressKey(key)} />
+            <KeypadNumber number="2" onPressKey={key => this.onPressKey(key)} />
+            <KeypadNumber number="3" onPressKey={key => this.onPressKey(key)} />
+          </View>
+          <View style={{ flexDirection: "row", }}>
+            <KeypadNumber number="4" onPressKey={key => this.onPressKey(key)} />
+            <KeypadNumber number="5" onPressKey={key => this.onPressKey(key)} />
+            <KeypadNumber number="6" onPressKey={key => this.onPressKey(key)} />
+          </View>
+          <View style={{ flexDirection: "row", }}>
+            <KeypadNumber number="7" onPressKey={key => this.onPressKey(key)} />
+            <KeypadNumber number="8" onPressKey={key => this.onPressKey(key)} />
+            <KeypadNumber number="9" onPressKey={key => this.onPressKey(key)} />
+          </View>
+          <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center"}}>
+            <KeypadNumber number="0" onPressKey={key => this.onPressKey(key)} />
+          </View>
         </View>
-        <View style={{ flexDirection: 'row' }}>
-          <Button text="4" onPress={() => this.onKeyPress(4)} />
-          <Button text="5" onPress={() => this.onKeyPress(5)} />
-          <Button text="6" onPress={() => this.onKeyPress(6)} />
-        </View>
-        <View style={{ flexDirection: 'row' }}>
-          <Button text="7" onPress={() => this.onKeyPress(7)} />
-          <Button text="8" onPress={() => this.onKeyPress(8)} />
-          <Button text="9" onPress={() => this.onKeyPress(9)} />
-        </View>
-        <Button text="0" onPress={() => this.onKeyPress(0)} />
-      </View>
-    )
+      </Card>
+    );
   }
 }
