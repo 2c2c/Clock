@@ -16,6 +16,7 @@ import dateFns from "date-fns";
 import ActionButton from "react-native-action-button";
 import Week from "./Week";
 import AlarmModal from "./AlarmModal";
+import TextWeek from "./TextWeek";
 
 //androids timepicker gives an hour and minute integer
 //creating a fake date makes for easier conversion
@@ -167,7 +168,7 @@ export default class AlarmList extends React.Component {
                   )
                 }
               </Text>
-              <Text>Mon, Tue, Thu</Text>
+              <TextWeek enabledDays={rowData.confirmedDays} />
             </View>
           </TouchableOpacity>
           <View style={{alignSelf: "center"}}>
