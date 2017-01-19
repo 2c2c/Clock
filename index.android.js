@@ -63,7 +63,7 @@ class rntest extends React.Component {
           </View>
         </Screen>
         <Screen style={styles.slide1} titlewtf="Timer">
-          <Text>Timer</Text>
+        <Timer />
         </Screen>
         <Screen style={styles.slide1} titlewtf="Stopwatch">
           <Text>STopwatch</Text>

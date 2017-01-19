@@ -26,10 +26,22 @@ import Swiper from "react-native-swiper";
 import KeypadNumber from "./KeypadNumber";
 import TimerInputDisplay from "./TimerInputDisplay";
 import TimerInputMode from "./TimerInputMode";
+import TimerActiveMode from "./TimerActiveMode";
+
+const styles = StyleSheet.create({
+  timerScreen: {
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    flexGrow: 1,
+    width: Dimensions.get("window").width
+  }
+});
 
 export default class extends React.Component {
   state = {
     activated: false,
+    paused: false,
     key: null,
     display: "00000",
     hours: null,
@@ -37,6 +49,10 @@ export default class extends React.Component {
     seconds: null
   };
 
+  activateTimer() {
+    this.setState({activated: true});
+    this.startCountdown();
+  }
   clearDisplay() {
     this.setState({display: "00000"});
   }
@@ -53,25 +69,22 @@ export default class extends React.Component {
 
     const new_hours = hours + hour_carry;
 
+    console.log({hours: new_hours, minutes: new_minutes, seconds: new_seconds});
     return {hours: new_hours, minutes: new_minutes, seconds: new_seconds};
   }
 
   //converts string based display to numerical hours,mins,seconds used in actual countdown
-  convertDisplay() {
-    const {display} = this.state;
+  convertDisplay(display) {
     const hours = Number(display.substring(0, 1));
     const minutes = Number(display.substring(1, 3));
     const seconds = Number(display.substring(3, 5));
 
-    const {new_hours, new_minutes, new_seconds} = this.removeOverflow({
-      hours,
-      minutes,
-      seconds
-    });
+    const time = this.removeOverflow({hours, minutes, seconds});
+
     this.setState({
-      hours: new_hours,
-      minutes: new_minutes,
-      seconds: new_seconds
+      hours: time.hours,
+      minutes: time.minutes,
+      seconds: time.seconds
     });
   }
 
@@ -97,9 +110,16 @@ export default class extends React.Component {
 
   startCountdown() {
     const ONE_SECOND = 1000;
-    const key = setInterval(
+    var key = setInterval(
       () => {
-        this.decrement();
+        const {hours, minutes, seconds} = this.state;
+        if (hours === 0 && minutes === 0 && seconds === 0) {
+          clearInterval(key);
+          return;
+        }
+        if (!this.state.paused) {
+          this.decrement();
+        }
       },
       ONE_SECOND
     );
@@ -107,34 +127,56 @@ export default class extends React.Component {
     this.setState({key});
   }
 
+  togglePauseState() {
+    this.setState({paused: !this.state.paused});
+  }
+  destroyCountdown() {
+    console.log("stop");
+    clearInterval(this.state.key);
+  }
+
   onPressKey(key) {
-    console.log(key);
     let new_display = this.state.display.substring(1, 5);
     new_display += key;
+
+    this.convertDisplay(new_display);
 
     this.setState({display: new_display});
   }
 
   render() {
-    const {display} = this.state;
-    return (
-      <Card
-        style={
-          {
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            flexGrow: 1,
-            width: Dimensions.get("window").width
-          }
-        }
-      >
+    const {display, paused, activated, hours, minutes, seconds} = this.state;
+    const renderInputMode = (
+      <Card style={styles.timerScreen}>
         <TimerInputMode
           display={display}
           clearDisplay={() => this.clearDisplay()}
           onPressKey={key => this.onPressKey(key)}
         />
+        <ActionButton
+          onPress={() => this.activateTimer()}
+          position="center"
+          buttonColor="rgba(231,76,60,1)"
+          icon={<Icon color="#ffffff" name="play-arrow" />}
+        />
       </Card>
     );
+
+    const renderActiveMode = (
+      <Card style={styles.timerScreen}>
+        <TimerActiveMode hours={hours} minutes={minutes} seconds={seconds} />
+        <ActionButton
+          onPress={() => this.togglePauseState()}
+          position="center"
+          buttonColor="rgba(231,76,60,1)"
+          icon={
+            paused
+              ? <Icon color="#ffffff" name="play-arrow" />
+              : <Icon color="#ffffff" name="pause" />
+          }
+        />
+      </Card>
+    );
+    return activated ? renderActiveMode : renderInputMode;
   }
 }

@@ -202,7 +202,8 @@ export default class AlarmList extends React.Component {
           renderRow={this._renderRow.bind(this)}
         />
         <ActionButton
-          position="right"
+          position="center"
+          icon={<Icon color="#ffffff" name="add-alert" />}
           buttonColor="rgba(231,76,60,1)"
           onPress={() => this.dateTimePicker()}
         />
