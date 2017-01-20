@@ -142,16 +142,7 @@ export default class AlarmList extends React.Component {
 
   _renderRow(rowData, sectionID, rowID, highlightRow) {
     return (
-      <View style={{flexDirection: "row"}}>
-        <Card
-          style={
-            {
-              flexDirection: "row",
-              justifyContent: "space-between",
-              width: Dimensions.get("window").width * 0.95
-            }
-          }
-        >
+      <View style={{flex: 1, flexDirection: "row"}}>
           <TouchableOpacity onPress={(r) => this.toggleModal(rowID)}>
             <View>
               <Text style={{fontSize: 30}}>
@@ -187,13 +178,12 @@ export default class AlarmList extends React.Component {
             enabledDays={rowData.displayDays}
             time={rowData.time}
           />
-        </Card>
       </View>
     );
   }
   render() {
     return (
-      <View>
+      <View style={{flex: 1, flexDirection: "column", justifyContent: "center"}}>
         <ListView
           style={{height: Dimensions.get("window").height}}
           contentContainerStyle={{alignItems: "center"}}

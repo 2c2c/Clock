@@ -30,17 +30,18 @@ import TimerActiveMode from "./TimerActiveMode";
 import StopwatchDisplay from "./StopwatchDisplay";
 
 const styles = StyleSheet.create({
-  timerScreen: {
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    flexGrow: 1,
-    width: Dimensions.get("window").width
-  }
+  stopwatch: {flex: 1, flexDirection: "column", justifyContent: "center"}
 });
 
 export default class Stopwatch extends React.Component {
-  state = {activated: false, paused: false, elapsed: null, key: null};
+  state = {
+    start: null,
+    prevElapsed: 0,
+    activated: false,
+    paused: false,
+    elapsed: null,
+    key: null
+  };
 
   //diff = now - start - last diff
   //array of diffs to display
@@ -49,7 +50,7 @@ export default class Stopwatch extends React.Component {
       this.setState({elapsed: 0});
       return;
     }
-    var elapsed = Date.now() - this.state.start;
+    var elapsed = Date.now() - this.state.start + this.state.prevElapsed;
     this.setState({elapsed: elapsed});
   }
 
@@ -74,13 +75,19 @@ export default class Stopwatch extends React.Component {
   }
 
   togglePause() {
-    this.setState({paused: !this.state.paused});
+    this.state.paused
+      ? this.setState({
+        paused: false,
+        prevElapsed: this.state.elapsed,
+        start: Date.now()
+      })
+      : this.setState({paused: true});
   }
 
   render() {
     const {paused, activated, elapsed} = this.state;
     const renderStopped = (
-      <Card style={styles.timerScreen}>
+      <View style={styles.stopwatch}>
         <StopwatchDisplay activated elapsed={elapsed} />
         <ActionButton
           onPress={() => this.startStopwatch()}
@@ -88,11 +95,11 @@ export default class Stopwatch extends React.Component {
           buttonColor="rgba(231,76,60,1)"
           icon={<Icon color="#ffffff" name="play-arrow" />}
         />
-      </Card>
+      </View>
     );
 
     const renderActivated = (
-      <Card style={styles.timerScreen}>
+      <View style={styles.stopwatch}>
         <StopwatchDisplay activated elapsed={elapsed} />
         <ActionButton
           onPress={() => this.togglePause()}
@@ -104,7 +111,7 @@ export default class Stopwatch extends React.Component {
               : <Icon color="#ffffff" name="pause" />
           }
         />
-      </Card>
+      </View>
     );
     return activated ? renderActivated : renderStopped;
   }

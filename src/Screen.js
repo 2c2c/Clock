@@ -1,9 +1,19 @@
 import React from "react";
-import {AppRegistry,StyleSheet,Text,View,ListView,Switch} from "react-native";
+import {Dimensions, AppRegistry,StyleSheet,Text,View,ListView,Switch} from "react-native";
 import {Drawer,Toolbar,Icon} from "react-native-material-design";
 
+const styles = StyleSheet.create({
+  screen: {
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    flexGrow: 1,
+    width: Dimensions.get("window").width
+  }
+});
+
 const Screen = props => (
-  <View style={props.style}>
+  <View style={styles.screen}>
     <Toolbar icon="menu" title={props.titlewtf}/>
     {props.children}
   </View>

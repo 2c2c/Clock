@@ -29,12 +29,10 @@ import TimerInputMode from "./TimerInputMode";
 import TimerActiveMode from "./TimerActiveMode";
 
 const styles = StyleSheet.create({
-  timerScreen: {
+  timer: {
+    flex: 1,
     flexDirection: "column",
-    alignItems: "center",
     justifyContent: "center",
-    flexGrow: 1,
-    width: Dimensions.get("window").width
   }
 });
 
@@ -50,11 +48,11 @@ export default class extends React.Component {
   };
 
   activateTimer() {
-    this.setState({activated: true});
+    this.setState({ activated: true });
     this.startCountdown();
   }
   clearDisplay() {
-    this.setState({display: "00000"});
+    this.setState({ display: "00000" });
   }
   // display can receive input that overflow minute or second property
   // ie change 80s -> 1m 20s
@@ -69,8 +67,8 @@ export default class extends React.Component {
 
     const new_hours = hours + hour_carry;
 
-    console.log({hours: new_hours, minutes: new_minutes, seconds: new_seconds});
-    return {hours: new_hours, minutes: new_minutes, seconds: new_seconds};
+    console.log({ hours: new_hours, minutes: new_minutes, seconds: new_seconds });
+    return { hours: new_hours, minutes: new_minutes, seconds: new_seconds };
   }
 
   //converts string based display to numerical hours,mins,seconds used in actual countdown
@@ -79,7 +77,7 @@ export default class extends React.Component {
     const minutes = Number(display.substring(1, 3));
     const seconds = Number(display.substring(3, 5));
 
-    const time = this.removeOverflow({hours, minutes, seconds});
+    const time = this.removeOverflow({ hours, minutes, seconds });
 
     this.setState({
       hours: time.hours,
@@ -124,11 +122,11 @@ export default class extends React.Component {
       ONE_SECOND
     );
 
-    this.setState({key});
+    this.setState({ key });
   }
 
   togglePauseState() {
-    this.setState({paused: !this.state.paused});
+    this.setState({ paused: !this.state.paused });
   }
   destroyCountdown() {
     console.log("stop");
@@ -141,29 +139,29 @@ export default class extends React.Component {
 
     this.convertDisplay(new_display);
 
-    this.setState({display: new_display});
+    this.setState({ display: new_display });
   }
 
   render() {
     const {display, paused, activated, hours, minutes, seconds} = this.state;
     const renderInputMode = (
-      <Card style={styles.timerScreen}>
+      <View style={styles.timer}>
         <TimerInputMode
           display={display}
           clearDisplay={() => this.clearDisplay()}
           onPressKey={key => this.onPressKey(key)}
-        />
+          />
         <ActionButton
           onPress={() => this.activateTimer()}
           position="center"
           buttonColor="rgba(231,76,60,1)"
           icon={<Icon color="#ffffff" name="play-arrow" />}
-        />
-      </Card>
+          />
+      </View>
     );
 
     const renderActiveMode = (
-      <Card style={styles.timerScreen}>
+      <View style={styles.timer}>
         <TimerActiveMode hours={hours} minutes={minutes} seconds={seconds} />
         <ActionButton
           onPress={() => this.togglePauseState()}
@@ -174,8 +172,8 @@ export default class extends React.Component {
               ? <Icon color="#ffffff" name="play-arrow" />
               : <Icon color="#ffffff" name="pause" />
           }
-        />
-      </Card>
+          />
+      </View>
     );
     return activated ? renderActiveMode : renderInputMode;
   }
