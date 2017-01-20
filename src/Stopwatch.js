@@ -27,29 +27,85 @@ import KeypadNumber from "./KeypadNumber";
 import TimerInputDisplay from "./TimerInputDisplay";
 import TimerInputMode from "./TimerInputMode";
 import TimerActiveMode from "./TimerActiveMode";
+import StopwatchDisplay from "./StopwatchDisplay";
 
-function getTimeSpan(elapsed) {
-  const hours = String(Math.floor(elapsed / 1000 / 60 / 60) + 100).substring(1);
-  const minutes = String(
-    Math.floor(elapsed % (1000 * 60 * 60) / 60000) + 100
-  ).substring(1);
-  const seconds = String(
-    Math.floor(elapsed % (1000 * 60) / 1000) + 100
-  ).substring(1);
-  const ms = String(elapsed % 1000 + 1000).substring(1);
+const styles = StyleSheet.create({
+  timerScreen: {
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    flexGrow: 1,
+    width: Dimensions.get("window").width
+  }
+});
 
-  return {hours, minutes, seconds, ms};
+export default class Stopwatch extends React.Component {
+  state = {activated: false, paused: false, elapsed: null, key: null};
+
+  //diff = now - start - last diff
+  //array of diffs to display
+  tick() {
+    if (!this.state.start) {
+      this.setState({elapsed: 0});
+      return;
+    }
+    var elapsed = Date.now() - this.state.start;
+    this.setState({elapsed: elapsed});
+  }
+
+  startStopwatch() {
+    this.setState({activated: true, start: Date.now()});
+
+    const key = setInterval(
+      () => {
+        if (!this.state.paused) {
+          this.tick();
+        }
+      },
+      8
+    );
+
+    this.setState({key});
+  }
+
+  destroyStopwatch() {
+    clearInterval(this.state.key);
+    this.setState({activated: false, paused: false, elapsed: null, key: null});
+  }
+
+  togglePause() {
+    this.setState({paused: !this.state.paused});
+  }
+
+  render() {
+    const {paused, activated, elapsed} = this.state;
+    const renderStopped = (
+      <Card style={styles.timerScreen}>
+        <StopwatchDisplay activated elapsed={elapsed} />
+        <ActionButton
+          onPress={() => this.startStopwatch()}
+          position="center"
+          buttonColor="rgba(231,76,60,1)"
+          icon={<Icon color="#ffffff" name="play-arrow" />}
+        />
+      </Card>
+    );
+
+    const renderActivated = (
+      <Card style={styles.timerScreen}>
+        <StopwatchDisplay activated elapsed={elapsed} />
+        <ActionButton
+          onPress={() => this.togglePause()}
+          position="center"
+          buttonColor="rgba(231,76,60,1)"
+          icon={
+            paused
+              ? <Icon color="#ffffff" name="play-arrow" />
+              : <Icon color="#ffffff" name="pause" />
+          }
+        />
+      </Card>
+    );
+    return activated ? renderActivated : renderStopped;
+  }
 }
-
-//diff = now - start - last diff
-//array of diffs to display
-function tick() {
-  var elapsed = Date.now() - this.state.start + this.state.diff;
-  this.setState({elapsed: elapsed});
-}
-
-const Stopwatch = props => {
-  return <Text>text</Text>;
-};
-
-export default Stopwatch

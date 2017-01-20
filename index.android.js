@@ -26,6 +26,7 @@ import DayIconSetter from "./src/DayIconSetter";
 import DayIcon from "./src/DayIconSetter";
 import Week from "./src/Week";
 import Timer from "./src/Timer";
+import Stopwatch from "./src/Stopwatch";
 
 import Swiper from "react-native-swiper";
 
@@ -66,8 +67,7 @@ class rntest extends React.Component {
         <Timer />
         </Screen>
         <Screen style={styles.slide1} titlewtf="Stopwatch">
-          <Text>STopwatch</Text>
-          <Week style={{ flexDirection: "row" }} />
+          <Stopwatch />
         </Screen>
         <View style={styles.slide3}>
           <Timer />
