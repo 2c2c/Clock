@@ -16,14 +16,19 @@ import {
   Picker,
   TextInput
 } from "react-native";
-import {Button,Drawer,Toolbar,Icon,Avatar} from "react-native-material-design";
+import {
+  Button,
+  Drawer,
+  Toolbar,
+  Icon,
+  Avatar
+} from "react-native-material-design";
 import dateFns from "date-fns";
 import Clock from "./src/Clock";
 import ActionButton from "react-native-action-button";
 import Screen from "./src/Screen";
 import AlarmList from "./src/AlarmList";
 import DayIconSetter from "./src/DayIconSetter";
-import DayIcon from "./src/DayIconSetter";
 import Week from "./src/Week";
 import Timer from "./src/Timer";
 import Stopwatch from "./src/Stopwatch";
@@ -32,10 +37,7 @@ import Swiper from "react-native-swiper";
 
 var styles = StyleSheet.create({
   wrapper: {},
-  slide1: {
-    flex: 1,
-    backgroundColor: "#9DD6EB"
-  },
+  slide1: {flex: 1, backgroundColor: "#9DD6EB"},
   slide2: {flex: 1, backgroundColor: "#97CAE5"},
   slide3: {
     flex: 1,
@@ -51,7 +53,6 @@ class rntest extends React.Component {
     super();
   }
 
-
   render() {
     return (
       <Swiper style={styles.wrapper} showsButtons={false}>
@@ -64,14 +65,11 @@ class rntest extends React.Component {
           </View>
         </Screen>
         <Screen style={styles.slide1} titlewtf="Timer">
-        <Timer />
+          <Timer />
         </Screen>
         <Screen style={styles.slide1} titlewtf="Stopwatch">
           <Stopwatch />
         </Screen>
-        <View style={styles.slide3}>
-          <Timer />
-        </View>
       </Swiper>
     );
   }
