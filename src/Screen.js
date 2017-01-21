@@ -7,7 +7,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    flexGrow: 1,
+    flex: 1,
     width: Dimensions.get("window").width
   }
 });
@@ -18,7 +18,5 @@ const Screen = props => (
     {props.children}
   </View>
 );
-
-Screen.defaultProps = {title: React.PropTypes.string};
 
 export default Screen;

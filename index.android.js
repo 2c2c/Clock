@@ -13,11 +13,13 @@ import {
   ListView,
   Switch,
   TimePickerAndroid,
+  Dimensions,
   Picker,
   TextInput
 } from "react-native";
 import {
   Button,
+  Divider,
   Drawer,
   Toolbar,
   Icon,
@@ -69,6 +71,12 @@ class rntest extends React.Component {
         </Screen>
         <Screen style={styles.slide1} titlewtf="Stopwatch">
           <Stopwatch />
+        </Screen>
+        <Screen titlewtf="?">
+          <View style={{ width:400, flexDirection: "row", justifyContent: "space-around" }}>
+            <View style={{ backgroundColor: "red", height: 50, width: 50 }} />
+            <View style={{ backgroundColor: "red", height: 50, width: 50 }} />
+          </View>
         </Screen>
       </Swiper>
     );

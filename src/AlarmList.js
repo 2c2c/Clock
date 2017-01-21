@@ -11,7 +11,7 @@ import {
   TouchableOpacity,
   Modal
 } from "react-native";
-import {Card,Button,Drawer,Toolbar,Icon} from "react-native-material-design";
+import {Divider, Card,Button,Drawer,Toolbar,Icon} from "react-native-material-design";
 import dateFns from "date-fns";
 import ActionButton from "react-native-action-button";
 import Week from "./Week";
@@ -28,7 +28,7 @@ export default class AlarmList extends React.Component {
 
     this.items = [];
     this.count = 0;
-    this.state = {language: "", dataSource: ds.cloneWithRows(this.items)};
+    this.state = {dataSource: ds.cloneWithRows(this.items)};
   }
 
   addToAlarmList(hour, minute) {
@@ -115,7 +115,7 @@ export default class AlarmList extends React.Component {
   async dateTimePicker() {
     try {
       const {action, hour, minute} = await TimePickerAndroid.open({
-        hour: 14,
+        hour: 7,
         minute: 0,
         // Will display '2 PM'
         is24Hour: false
@@ -140,64 +140,77 @@ export default class AlarmList extends React.Component {
     });
   }
 
+  _renderSeperator(sectionID, rowID, adjacentRowHighlighted) {
+    return <Divider key={`${sectionID}-${rowID}`} style={{alignSelf: "stretch"}}/>
+  }
+
   _renderRow(rowData, sectionID, rowID, highlightRow) {
     return (
-      <View style={{flex: 1, flexDirection: "row"}}>
-          <TouchableOpacity onPress={(r) => this.toggleModal(rowID)}>
-            <View>
-              <Text style={{fontSize: 30}}>
-                {
-                  dateFns.format(
-                    new Date(
-                      1999,
-                      1,
-                      1,
-                      rowData.time.hour,
-                      rowData.time.minute
-                    ),
-                    "h:mm A"
-                  )
-                }
-              </Text>
-              <TextWeek enabledDays={rowData.confirmedDays} />
-            </View>
-          </TouchableOpacity>
-          <View style={{alignSelf: "center"}}>
-            <Switch
-              onValueChange={r => this.handleAlarmToggle(rowID)}
-              value={rowData.alarmEnabled}
-            />
+      <View style={{width: Dimensions.get("window").width, flexDirection: "row", justifyContent: "space-around" }}>
+        <TouchableOpacity style={{}} onPress={(r) => this.toggleModal(rowID)}>
+          <View>
+            <Text style={{ fontSize: 30 }}>
+              {
+                dateFns.format(
+                  new Date(
+                    1999,
+                    1,
+                    1,
+                    rowData.time.hour,
+                    rowData.time.minute
+                  ),
+                  "h:mm A"
+                )
+              }
+            </Text>
+            <TextWeek enabledDays={rowData.confirmedDays} />
           </View>
-          <AlarmModal
-            toggleModal={rowID => this.toggleModal(rowID)}
-            showModal={rowData.showModal}
-            cancelAlarmDays={(rowID) => this.cancelAlarmDays(rowID)}
-            confirmAlarmDays={(rowID) => this.confirmAlarmDays(rowID)}
-            handleDayToggle={(rowID, day) => this.handleDayToggle(rowID, day)}
-            rowID={rowID}
-            enabledDays={rowData.displayDays}
-            time={rowData.time}
+        </TouchableOpacity>
+        <View style={{ alignSelf: "center" }}>
+          <Switch
+            onValueChange={r => this.handleAlarmToggle(rowID)}
+            value={rowData.alarmEnabled}
+            />
+        </View>
+        <AlarmModal
+          toggleModal={rowID => this.toggleModal(rowID)}
+          showModal={rowData.showModal}
+          cancelAlarmDays={(rowID) => this.cancelAlarmDays(rowID)}
+          confirmAlarmDays={(rowID) => this.confirmAlarmDays(rowID)}
+          handleDayToggle={(rowID, day) => this.handleDayToggle(rowID, day)}
+          rowID={rowID}
+          enabledDays={rowData.displayDays}
+          time={rowData.time}
           />
       </View>
     );
   }
   render() {
     return (
-      <View style={{flex: 1, flexDirection: "column", justifyContent: "center"}}>
+      <View style={{ flex: 1, flexDirection: "column", justifyContent: "center" }}>
         <ListView
-          style={{height: Dimensions.get("window").height}}
-          contentContainerStyle={{alignItems: "center"}}
+          style={{width: Dimensions.get("window").width }}
+          contentContainerStyle={{alignItems: "center" }}
           enableEmptySections
           dataSource={this.state.dataSource}
           renderRow={this._renderRow.bind(this)}
-        />
+          renderSeparator={this._renderSeperator.bind(this)}
+          />
         <ActionButton
           position="center"
           icon={<Icon color="#ffffff" name="add-alert" />}
           buttonColor="rgba(231,76,60,1)"
           onPress={() => this.dateTimePicker()}
-        />
+          />
       </View>
     );
   }
 }
+
+        // <ListView
+        //   style={{height: Dimensions.get("window").height}}
+        //   contentContainerStyle={{alignItems: "center"}}
+        //   enableEmptySections
+        //   dataSource={this.state.dataSource}
+        //   renderRow={this._renderRow.bind(this)}
+        // />
